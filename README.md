@@ -2,11 +2,11 @@
 #### The world's worst URL shortener
 
 Just derping around with some Haskell libraries. Sprinkling around tiny bits of:
-* ##### scotty
-* ##### blaze-html
-* ##### lens
-* ##### MonadRandom
-* ##### transformers
+* scotty
+* blaze-html
+* lens
+* MonadRandom
+* transformers
 
 I've read about them plenty... figured I should do something.
 
