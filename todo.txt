@@ -1,0 +1,4 @@
+-Escape user input
+-Validate URLs, so that foo.com doesn't become "host/foo.com" but "http://www.foo.com"
+-Make the site prettier
+-Make a storage backend that uses a database
