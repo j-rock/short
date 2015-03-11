@@ -4,7 +4,6 @@ module Short.State where
 
 import           Control.Applicative     ((<$>))
 import           Control.Concurrent.MVar (MVar, newMVar)
-import           Control.Lens            (makeLenses)
 import           Control.Monad           (replicateM)
 import           Control.Monad.Random
 import qualified Data.Text.Lazy          as T
@@ -26,17 +25,16 @@ data StorageService = StorageService
     }
 
 data ShortState = ShortState
-    { _storage :: StorageService
-    , _urls    :: [ShortenedURL]
+    { storage :: StorageService
+    , urls    :: [ShortenedURL]
     }
-makeLenses ''ShortState
 
 
 mkShortState :: IO StorageService -> IO (MVar ShortState)
 mkShortState mkStorageService =
     do store <- mkStorageService
        randURLs <- evalRandIO randomURLs
-       newMVar ShortState {_storage = store, _urls = randURLs}
+       newMVar ShortState {storage = store, urls = randURLs}
 
 randomURLs :: RandomGen g => Rand g [ShortenedURL]
 randomURLs =

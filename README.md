@@ -4,7 +4,6 @@
 Just derping around with some Haskell libraries. Sprinkling around tiny bits of:
 * scotty
 * blaze-html
-* lens
 * MonadRandom
 * transformers
 

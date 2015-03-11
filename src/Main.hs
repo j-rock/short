@@ -3,8 +3,8 @@
 module Main (main) where
 
 import           Control.Applicative           ((<$>))
-import           Control.Lens
 import           Control.Monad.IO.Class        (liftIO)
+import           Control.Monad.Loops           (dropWhileM)
 import           Control.Monad.Trans           (lift)
 import           Control.Monad.Trans.Maybe
 
@@ -36,35 +36,30 @@ main =
 
 
 tryGoingTo :: MVar ShortState -> ShortenedURL -> ActionM ()
-tryGoingTo s url =
-    let withShortState s' act = liftIO $ withMVar s' act
+tryGoingTo s' url =
+    let withShortState = (liftIO .) . withMVar
 
-    in do originalURL <- withShortState s $ \s' -> lookup (s' ^. storage) url
+    in do originalURL <- withShortState s' $ \s -> lookup (storage s) url
           case originalURL of
               Nothing             -> cantResolveURL url
               Just (URL endpoint) -> redirect endpoint
 
 
 shorten :: MVar ShortState -> OriginalURL -> ActionM ()
-shorten s url = do
-    su <- liftIO $ generateShortenedURL s url
+shorten s' url = do
+    su <- liftIO $ generateShortenedURL s' url
     case su of
         Nothing  -> couldntCreateURL url
         Just su' -> createdURL url su'
 
 
 generateShortenedURL :: MVar ShortState -> OriginalURL -> IO (Maybe ShortenedURL)
-generateShortenedURL s url =
-    let findNextURL _  []     = fail ""
-        findNextURL s' (u:us) = do isMem <- lift $ member (s' ^. storage) u
-                                   if isMem
-                                       then findNextURL s' us
-                                       else return (u, us)
-    in maybeModifyMVar s $ \s' ->
-           runMaybeT $ do
-               (shortURL, remaining) <- findNextURL s' $ s' ^. urls
-               _ <- lift $ insert (s' ^. storage) shortURL url
-               return (s' & urls .~ remaining, shortURL)
+generateShortenedURL s' url =
+    maybeModifyMVar s' $ \s ->
+        runMaybeT $ do
+            (shortURL:remaining) <- lift $ dropWhileM (member $ storage s) (urls s)
+            _ <- lift $ insert (storage s) shortURL url
+            return (s{urls = remaining}, shortURL)
 
 
 -- Peeked at Control.Concurrent.MVar.modifyMVar source code
