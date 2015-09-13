@@ -1,5 +1,3 @@
-{-# LANGUAGE TemplateHaskell #-}
-
 module Short.State where
 
 import           Control.Applicative     ((<$>))

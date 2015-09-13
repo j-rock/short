@@ -72,4 +72,3 @@ maybeModifyMVar m io =
         case mab of
             Nothing        -> return Nothing
             Just (a'', b') -> putMVar m a'' >> return (Just b')
-

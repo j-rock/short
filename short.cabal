@@ -13,14 +13,14 @@ cabal-version:       >=1.10
 executable short
   main-is:             Main.hs
   hs-source-dirs:      src/
-  build-depends:       base >=4.7 && <4.8,
+  build-depends:       base >=4.8 && <4.9,
                        mtl,
-                       transformers,
+                       transformers >=0.4 && <0.5,
                        containers,
                        monad-loops,
                        text,
                        MonadRandom,
-                       stm,
+                       stm >= 2.4 && <2.5,
                        scotty,
                        wai-middleware-static,
                        wai-extra,

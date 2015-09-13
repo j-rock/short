@@ -49,10 +49,8 @@ nestedDivClasses as h = foldl (flip ($)) h $ map cdiv as
 
 (%*) = nestedDivClasses
 
-
 actionHtml :: Html -> ActionM ()
 actionHtml = html . renderHtml
-
 
 headerFooter :: Html -> ActionM ()
 headerFooter bodyHtml =
@@ -70,8 +68,7 @@ headerFooter bodyHtml =
                            , "navbar-header"
                            ] $ h3 "URL Shortener"
 
-                      cdiv "container" $ bodyHtml
-
+                      cdiv "container" bodyHtml
 
 homePage :: ActionM ()
 homePage = headerFooter $ do
@@ -81,20 +78,18 @@ homePage = headerFooter $ do
 
              (%*) ["row", "col-lg-4", "bs-component", "container-fluid"] $
                 cform "form-horizontal" ! action "/s" ! method "post" $
-                  fieldset $ do
+                  fieldset $
                     cdiv "form-group" $ do
                       input ! class_ "form-control" ! type_ "text" ! name "url"
                       cbutton "btn btn-primary" ! type_ "submit" $ "Shorten it!"
 
-
 jumbo :: Html -> Html -> Html -> Html
 jumbo bigText medText buttonMsg =
-    do (%*) ["row", "col-lg-12", "jumbotron"] $ do
-         h1 bigText
-         p  medText
-         p $ a ! class_ "btn btn-primary btn-lg"
-               ! href "/" $ buttonMsg
-
+    (%*) ["row", "col-lg-12", "jumbotron"] $ do
+       h1 bigText
+       p  medText
+       p $ a ! class_ "btn btn-primary btn-lg"
+             ! href "/" $ buttonMsg
 
 createdURL :: OriginalURL -> ShortenedURL -> ActionM ()
 createdURL _ (URL su) =
@@ -106,25 +101,21 @@ createdURL _ (URL su) =
              lazyText "You can reach it at: "
              a ! href shortHref $ toHtml (T.append "localhost:5678/" su)
 
-    in headerFooter $ do
+    in headerFooter $
          jumbo "Congratulations" medText "Shorten another"
-
 
 errorPage :: Html -> ActionM ()
 errorPage explanation =
     headerFooter $ jumbo "Apologies" explanation "Go home"
 
-
 uhOh :: ActionM ()
 uhOh = errorPage "You are trying to reach a page that doesn't exist."
-
 
 urlError :: Html -> URL a -> ActionM ()
 urlError message (URL u) = errorPage $ message <> toHtml u
 
 cantResolveURL :: ShortenedURL -> ActionM ()
 cantResolveURL = urlError "Couldn't resolve this url: "
-
 
 couldntCreateURL :: OriginalURL -> ActionM ()
 couldntCreateURL = urlError "Couldn't shorten URL: "
