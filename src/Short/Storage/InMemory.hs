@@ -5,7 +5,6 @@ module Short.Storage.InMemory
       mkStorageService
     ) where
 
-import           Control.Applicative    ((<$>))
 import           Control.Concurrent.STM
 import qualified Data.Map.Lazy          as M
 

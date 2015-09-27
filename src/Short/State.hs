@@ -1,6 +1,5 @@
 module Short.State where
 
-import           Control.Applicative     ((<$>))
 import           Control.Concurrent.MVar (MVar, newMVar)
 import           Control.Monad           (replicateM)
 import           Control.Monad.Random

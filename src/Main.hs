@@ -2,7 +2,6 @@
 
 module Main (main) where
 
-import           Control.Applicative           ((<$>))
 import           Control.Monad.IO.Class        (liftIO)
 import           Control.Monad.Loops           (dropWhileM)
 import           Control.Monad.Trans           (lift)
